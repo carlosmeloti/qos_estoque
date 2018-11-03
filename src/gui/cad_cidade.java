@@ -5,24 +5,34 @@
  */
 
 package gui;
-import conexao.ConnectionAccessODBC;
+import conexao.Conexao;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Carlo Melo
  */
 public class cad_cidade extends javax.swing.JFrame {
     
-    ConnectionAccessODBC conexao = new ConnectionAccessODBC();
+    int navega = 0;
+    
+    Conexao conexao = new Conexao();
     
 
     /**
      * Creates new form cad_cidade
      */
-    public cad_cidade() {
+    public cad_cidade() throws SQLException {
         initComponents();
+        this.setLocationRelativeTo(null);
         conexao.conecta();
-        
+        conexao.executaSQL("SELECT * FROM cidade");
+       
+        conexao.resultSet.first();
+        mostraDados();
+       
     }
 
     /**
@@ -48,7 +58,7 @@ public class cad_cidade extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        btn_gravar = new javax.swing.JButton();
+        btn_novo = new javax.swing.JButton();
         btn_inserir = new javax.swing.JButton();
         btn_excluir = new javax.swing.JButton();
         btn_alterar = new javax.swing.JButton();
@@ -66,6 +76,12 @@ public class cad_cidade extends javax.swing.JFrame {
 
         jLabel3.setText("Código:");
 
+        jtf_codigo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtf_codigoActionPerformed(evt);
+            }
+        });
+
         jLabel4.setText("Nome:");
 
         jLabel5.setText("UF:");
@@ -78,6 +94,11 @@ public class cad_cidade extends javax.swing.JFrame {
         });
 
         jButton2.setText(">>");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("<");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -94,10 +115,25 @@ public class cad_cidade extends javax.swing.JFrame {
         });
 
         jButton5.setText("<<");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
-        btn_gravar.setText("Gravar");
+        btn_novo.setText("Novo");
+        btn_novo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_novoActionPerformed(evt);
+            }
+        });
 
-        btn_inserir.setText("Inserir");
+        btn_inserir.setText("Gravar");
+        btn_inserir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_inserirActionPerformed(evt);
+            }
+        });
 
         btn_excluir.setText("Excluir");
 
@@ -144,15 +180,15 @@ public class cad_cidade extends javax.swing.JFrame {
                                     .addComponent(cb_pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(cb_uf, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(66, 66, 66)
-                        .addComponent(btn_gravar)
+                        .addGap(75, 75, 75)
+                        .addComponent(btn_novo)
                         .addGap(27, 27, 27)
                         .addComponent(btn_inserir)
                         .addGap(30, 30, 30)
                         .addComponent(btn_excluir)
                         .addGap(28, 28, 28)
                         .addComponent(btn_alterar)))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -183,29 +219,106 @@ public class cad_cidade extends javax.swing.JFrame {
                     .addComponent(jButton3)
                     .addComponent(jButton4)
                     .addComponent(jButton5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_gravar)
+                    .addComponent(btn_novo)
                     .addComponent(btn_inserir)
                     .addComponent(btn_excluir)
                     .addComponent(btn_alterar))
-                .addGap(20, 20, 20))
+                .addGap(23, 23, 23))
         );
 
         setBounds(0, 0, 515, 433);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+        try {
+            conexao.resultSet.previous();
+             mostraDados();
+             navega = 1;
+        } catch (SQLException ex) {
+            Logger.getLogger(cad_cidade.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+        try {
+            conexao.resultSet.next();
+             mostraDados();
+             navega = 2;
+        } catch (SQLException ex) {
+            Logger.getLogger(cad_cidade.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+       
+        
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void cb_ufActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_ufActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cb_ufActionPerformed
+
+    private void jtf_codigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtf_codigoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtf_codigoActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        try {
+            conexao.resultSet.last();
+             mostraDados();
+        } catch (SQLException ex) {
+            Logger.getLogger(cad_cidade.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+
+        try {
+            conexao.resultSet.first();
+             mostraDados();
+        } catch (SQLException ex) {
+            Logger.getLogger(cad_cidade.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void btn_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_novoActionPerformed
+
+        jtf_codigo.setText("");
+        jtf_nome.setText("");
+        cb_uf.setSelectedItem("PA");
+        jtf_nome.requestFocus();
+        jtf_codigo.setEditable(false);
+        
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_novoActionPerformed
+
+    private void btn_inserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inserirActionPerformed
+
+        try {
+            String sqlInsert = "INSERT INTO cidade (nome, uf) VALUES ('"+
+                    jtf_nome.getText()+"','"+
+                    cb_uf.getSelectedItem()+"')";
+            conexao.statement.executeUpdate(sqlInsert);
+            JOptionPane.showMessageDialog(null, "Cidade gravada com sucesso!");
+            
+            conexao.resultSet = conexao.statement.executeQuery("SELECT * FROM cidade");
+            conexao.resultSet.next();
+            mostraDados();
+        } catch (Exception e) {
+        }
+        
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_inserirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -237,7 +350,11 @@ public class cad_cidade extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new cad_cidade().setVisible(true);
+                try {
+                    new cad_cidade().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(cad_cidade.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -245,8 +362,8 @@ public class cad_cidade extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_alterar;
     private javax.swing.JButton btn_excluir;
-    private javax.swing.JButton btn_gravar;
     private javax.swing.JButton btn_inserir;
+    private javax.swing.JButton btn_novo;
     private javax.swing.JComboBox<String> cb_pesquisar;
     private javax.swing.JComboBox<String> cb_uf;
     private javax.swing.JButton jButton1;
@@ -263,4 +380,25 @@ public class cad_cidade extends javax.swing.JFrame {
     private javax.swing.JTextField jtf_nome;
     private javax.swing.JTextField jtf_pesquisar;
     // End of variables declaration//GEN-END:variables
+    
+      
+    
+    public void mostraDados() throws SQLException{
+        try {
+            
+            jtf_codigo.setText(conexao.resultSet.getString("id"));
+            jtf_nome.setText(conexao.resultSet.getString("nome"));
+            cb_uf.setSelectedItem(conexao.resultSet.getString("uf"));
+        
+        } catch (Exception e) {
+            if(navega == 1){
+                JOptionPane.showMessageDialog(null,"Primeiro registro!");
+            }else if(navega == 2){
+                JOptionPane.showMessageDialog(null,"Último registro!");
+        }
+        }
+             
+        
+    }
+   
 }

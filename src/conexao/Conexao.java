@@ -16,12 +16,12 @@ import javax.swing.JOptionPane;
  *
  * @author Carlo Melo
  */
-public class ConnectionAccessODBC {
-    
-    final private String driver = "sun.jdbc.odbc.JdbcOdbcDriver";
-    final private String url = "jdbc:odbc:estoque";
-    final private String usuario = "";
-    final private String senha = "";
+public class Conexao {
+ 
+    final private String driver = "com.mysql.jdbc.Driver";
+    final private String url = "jdbc:mysql://localhost:3306/etoque?ssl=true";
+    final private String usuario = "root";
+    final private String senha = "Thecure81";
     
     private Connection conexao;
     
@@ -35,8 +35,7 @@ public class ConnectionAccessODBC {
         try{
             Class.forName(driver);
             conexao = DriverManager.getConnection(url, usuario, senha);
-            JOptionPane.showMessageDialog(null, "Conectou!!");
-            
+                        
         }catch(ClassNotFoundException Driver){
             JOptionPane.showMessageDialog(null, "Driver não localizado: " +Driver );
             result = false;
@@ -69,6 +68,8 @@ public class ConnectionAccessODBC {
         }catch(SQLException sqlex){
             JOptionPane.showMessageDialog(null, "Não foi possível executar SQL" + sqlex.getMessage());
         }
-    }
-    
 }
+ 
+
+}    
+
